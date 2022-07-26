@@ -585,6 +585,9 @@ h4 {
 .footer__copyright .footer__link {
   font-size: 1.4rem;
 }
+a.twitter-link {
+  color: white;
+}
 
 /* MODAL WINDOW */
 .modal {
