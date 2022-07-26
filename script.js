@@ -6,9 +6,12 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
+const section0 = document.querySelector('#section--0');
 const tabs = document.querySelectorAll('.operations__tab');
 const tabsContainer = document.querySelector('.operations__tab-container');
 const tabsContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
+const logo = document.querySelector('.logo__link');
 
 ///////////////////////////////////////
 // Modal window
@@ -36,20 +39,16 @@ document.addEventListener('keydown', function (e) {
 });
 
 ///////////////////////////////////////
-// Button scrolling
+// Header Button ve Logo scrolling
 
 btnScrollTo.addEventListener('click', function () {
-  // eski yöntem ile scroll
-  // const s1coords = section1.getBoundingClientRect();
-
-  // window.scrollTo({
-  //   left: s1coords.left + window.pageXOffset,
-  //   top: s1coords.top + window.pageYOffset,
-  //   behavior: 'smooth',
-  // });
-
-  // modern yöntem ile scroll
+  // butona tıklayınca gideceği bölümü belirtiyoruz
   section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+logo.addEventListener('click', function () {
+  // Logoya tıklayınca gideceği bölümü belirtiyoruz
+  section0.scrollIntoView({ behavior: 'smooth' });
 });
 
 ///////////////////////////////////////
@@ -65,7 +64,7 @@ btnScrollTo.addEventListener('click', function () {
 //   });
 // });
 
-//Event delegation
+// menü scroll foreach döngüsü yerine Event delegation yöntemi ile link seçiyoruz. Sayfayı yavşlatmaması için
 document.querySelector('.nav__links').addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -78,7 +77,7 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 });
 
 ///////////////////////////////////////
-// Tabbed component
+// Tab Alanı
 
 tabsContainer.addEventListener('click', function (e) {
   const clicked = e.target.closest('.operations__tab');
@@ -100,30 +99,45 @@ tabsContainer.addEventListener('click', function (e) {
     .classList.add('operations__content--active');
 });
 
-// Menu fade animation
-const nav = document.querySelector('.nav');
-nav.addEventListener('mouseover', function (e) {
+///////////////////////////////////////
+// Menu fade animasyonu ekleme
+
+// Hover efekti için fonksiyonu tanımlıyoruz
+const handleHover = function (e) {
   if (e.target.classList.contains('nav__link')) {
     const link = e.target;
     const siblings = link.closest('.nav').querySelectorAll('.nav__link');
     const logo = link.closest('.nav').querySelector('img');
     siblings.forEach(el => {
-      if (el !== link) el.style.opacity = 0.5;
+      if (el !== link) el.style.opacity = this;
     });
-    logo.style.opacity = 0.5;
+    logo.style.opacity = this;
   }
+};
+
+// mouse menü üzerine gelince oluşan olayı fonksiyona bind ediyoruz
+nav.addEventListener('mouseover', handleHover.bind(0.5));
+
+// mouse menü üzerinden gidince oluşan olayı fonksiyona bind ediyoruz
+nav.addEventListener('mouseout', handleHover.bind(1));
+
+///////////////////////////////////////
+// Sticky navigation
+
+const header = document.querySelector('.header');
+const stcikyNav = function (entries) {
+  const [entry] = entries;
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stcikyNav, {
+  root: null,
+  threshold: 0,
+  rootMargin: '-90px',
 });
-nav.addEventListener('mouseout', function (e) {
-  if (e.target.classList.contains('nav__link')) {
-    const link = e.target;
-    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
-    const logo = link.closest('.nav').querySelector('img');
-    siblings.forEach(el => {
-      if (el !== link) el.style.opacity = 1;
-    });
-    logo.style.opacity = 1;
-  }
-});
+
+headerObserver.observe(header);
 
 /*
 const header = document.querySelector('.header');
