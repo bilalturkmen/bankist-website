@@ -4,6 +4,6 @@
 
 A simple banking landing page.
 
-![](/screenshot.png)
+![](/screenshott.png)
 
 **Built with:** HTML, CSS, JavaScript
